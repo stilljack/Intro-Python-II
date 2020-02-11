@@ -60,7 +60,7 @@ else:
 print("Adventure game or whatever!")
 mPlayer = Player(
     name=input("enter your name:"),
-    room=room['outside']
+    currentRoom=room['outside']
 )
 
 
@@ -95,25 +95,25 @@ print(f"Hello {mPlayer.name}! lets get to getting")
 # however moveTo is responsible for determining if it should actually move the player, or spit an error
 def moveTo(target:Player,letter:str):
         if letter == "n":
-            if target.room.n_to == "":
+            if target.currentRoom.n_to == "":
                 textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere north to go right now")
             else:
-                target.room = target.room.n_to
+                target.currentRoom = target.currentRoom.n_to
         if letter == "s":
-            if target.room.s_to == "":
+            if target.currentRoom.s_to == "":
                 textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere south to go right now")
             else:
-                 target.room =target.room.s_to
+                 target.currentRoom =target.currentRoom.s_to
         if letter == "w":
-            if target.room.w_to == "":
+            if target.currentRoom.w_to == "":
                 textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere west to go right now")
             else:
-                target.room =target.room.w_to
+                target.currentRoom =target.currentRoom.w_to
         if letter == "e":
-            if target.room.e_to == "":
+            if target.currentRoom.e_to == "":
                 textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere east to go right now")
             else:
-                 target.room = target.room.e_to
+                 target.currentRoom = target.currentRoom.e_to
 
 def resolver(rawStr:str):
     if len(rawStr) == 1:
@@ -123,14 +123,14 @@ def resolver(rawStr:str):
             textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
             global keepPlaying
             keepPlaying= False
-    if rawStr == "help":
+    elif rawStr == "help":
         print(help)
     else:
         textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
 
 while keepPlaying:
-    textwrapIMPL(f"You are currently in {mPlayer.room.name}")
-    textwrapIMPL(mPlayer.room.description)
+    textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
+    textwrapIMPL(mPlayer.currentRoom.description)
     next = input("What next? Type help for options\n")
     resolver(next.lower())
 

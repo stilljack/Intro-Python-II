@@ -4,9 +4,9 @@ from src.room import Room
 
 
 class Player:
-    name=""
+    name:str
     currentRoom:Room
 
-    def __init__(self, name: str, room: Room):
+    def __init__(self, name: str, currentRoom: Room):
         self.name=name
-        self.room=room
+        self.currentRoom=currentRoom
