@@ -4,6 +4,18 @@ import textwrap
 from src.player import Player
 from src.room import Room
 
+
+help = """__________HELP________ 
+The following are valid commands: 
+n or N = travel north if possible 
+w or W = travel west if possible 
+e or E = travel east if possible 
+s or S = travel south if possible
+
+q or Q = quit the program 
+
+help = open this helpful document
+"""
 room = {
     'outside': Room("Outside Cave Entrance",
                     "North of you, the cave mount beckons"),
@@ -55,8 +67,11 @@ mPlayer = Player(
 # textwrap impl, send it text, it'll wrap and print it for ya
 # edit this function to alter text wrap settings or do any other final processing on text,
 # could be expanded concatanate multiple strs or whatever
+tw = textwrap
 def textwrapIMPL(text: str):
-    print(textwrap.wrap(text, 80))
+    final = tw.wrap(text, 80)
+    for t in final:
+        print(t)
 
 
 # set out keep playing variable to true to figure out of we need to play another turn or not
@@ -75,33 +90,52 @@ print(f"Hello {mPlayer.name}! lets get to getting")
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+#move to handles the assigning room location, should only get called on valid data -- i.e. n,w,s,e
+# however moveTo is responsible for determining if it should actually move the player, or spit an error
 def moveTo(target:Player,letter:str):
         if letter == "n":
-            target.room = target.room.n_to
+            if target.room.n_to == "":
+                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere north to go right now")
+            else:
+                target.room = target.room.n_to
         if letter == "s":
-            target.room =target.room.s_to
+            if target.room.s_to == "":
+                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere south to go right now")
+            else:
+                 target.room =target.room.s_to
         if letter == "w":
-            target.room =target.room.w_to
+            if target.room.w_to == "":
+                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere west to go right now")
+            else:
+                target.room =target.room.w_to
         if letter == "e":
-            target.room = target.room.e_to
+            if target.room.e_to == "":
+                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere east to go right now")
+            else:
+                 target.room = target.room.e_to
 
 def resolver(rawStr:str):
-    print(len(rawStr))
     if len(rawStr) == 1:
         if rawStr=="n" or rawStr== "s" or rawStr == "e" or rawStr =="w":
             moveTo(mPlayer,rawStr)
-            textwrapIMPL(mPlayer.room.name)
+        if rawStr=="q":
+            textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
+            global keepPlaying
+            keepPlaying= False
+    if rawStr == "help":
+        print(help)
     else:
         textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
 
 while keepPlaying:
     textwrapIMPL(f"You are currently in {mPlayer.room.name}")
     textwrapIMPL(mPlayer.room.description)
-    next = input("What next? Type help for options")
-    resolver(next)
+    next = input("What next? Type help for options\n")
+    resolver(next.lower())
 
 
-    keepPlaying = False
+
 
 # valid user input is n s e w
 #
