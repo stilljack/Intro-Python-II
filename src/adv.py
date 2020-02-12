@@ -1,9 +1,7 @@
 import textwrap
 
-
 from src.player import Player
 from src.room import Room
-
 
 help = """__________HELP________ 
 The following are valid commands: 
@@ -63,11 +61,12 @@ mPlayer = Player(
     currentRoom=room['outside']
 )
 
-
 # textwrap impl, send it text, it'll wrap and print it for ya
 # edit this function to alter text wrap settings or do any other final processing on text,
 # could be expanded concatanate multiple strs or whatever
 tw = textwrap
+
+
 def textwrapIMPL(text: str):
     final = tw.wrap(text, 80)
     for t in final:
@@ -80,6 +79,7 @@ keepPlaying = True
 # welcome player
 print(f"Hello {mPlayer.name}! lets get to getting")
 
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -91,51 +91,51 @@ print(f"Hello {mPlayer.name}! lets get to getting")
 #
 # If the user enters "q", quit the game.
 
-#move to handles the assigning room location, should only get called on valid data -- i.e. n,w,s,e
+# move to handles the assigning room location, should only get called on valid data -- i.e. n,w,s,e
 # however moveTo is responsible for determining if it should actually move the player, or spit an error
-def moveTo(target:Player,letter:str):
-        if letter == "n":
-            if target.currentRoom.n_to == "":
-                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere north to go right now")
-            else:
-                target.currentRoom = target.currentRoom.n_to
-        if letter == "s":
-            if target.currentRoom.s_to == "":
-                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere south to go right now")
-            else:
-                 target.currentRoom =target.currentRoom.s_to
-        if letter == "w":
-            if target.currentRoom.w_to == "":
-                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere west to go right now")
-            else:
-                target.currentRoom =target.currentRoom.w_to
-        if letter == "e":
-            if target.currentRoom.e_to == "":
-                textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere east to go right now")
-            else:
-                 target.currentRoom = target.currentRoom.e_to
+def moveTo(target: Player, letter: str):
+    if letter == "n":
+        if target.currentRoom.n_to == "":
+            textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere north to go right now")
+        else:
+            target.currentRoom = target.currentRoom.n_to
+    if letter == "s":
+        if target.currentRoom.s_to == "":
+            textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere south to go right now")
+        else:
+            target.currentRoom = target.currentRoom.s_to
+    if letter == "w":
+        if target.currentRoom.w_to == "":
+            textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere west to go right now")
+        else:
+            target.currentRoom = target.currentRoom.w_to
+    if letter == "e":
+        if target.currentRoom.e_to == "":
+            textwrapIMPL(f"Sorry {mPlayer.name} there's nowhere east to go right now")
+        else:
+            target.currentRoom = target.currentRoom.e_to
 
-def resolver(rawStr:str):
+
+def resolver(rawStr: str):
     if len(rawStr) == 1:
-        if rawStr=="n" or rawStr== "s" or rawStr == "e" or rawStr =="w":
-            moveTo(mPlayer,rawStr)
-        if rawStr=="q":
+        if rawStr == "n" or rawStr == "s" or rawStr == "e" or rawStr == "w":
+            moveTo(mPlayer, rawStr)
+        if rawStr == "q":
             textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
             global keepPlaying
-            keepPlaying= False
+            keepPlaying = False
     elif rawStr == "help":
         print(help)
     else:
         textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
 
+
 while keepPlaying:
     textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
     textwrapIMPL(mPlayer.currentRoom.description)
     next = input("What next? Type help for options\n")
-    resolver(next.lower())
-
-
-
+    resolver(
+        next.lower())  ## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
 
 # valid user input is n s e w
 #
