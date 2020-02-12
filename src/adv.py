@@ -2,6 +2,8 @@ import textwrap
 
 from src.player import Player
 from src.room import Room
+from src.item import listOfItems
+from src.item import Item
 
 help = """__________HELP________ 
 The following are valid commands: 
@@ -43,6 +45,11 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+
+# distribute room treasure
+room['treasure'].items = [listOfItems['gold']]
+room['foyer'].items = [listOfItems['goop'], listOfItems['vaporizer']]
+room['overlook'].items = [listOfItems['money']]
 
 print(f"{room['outside'].n_to} and target should be {room['foyer']}")
 if (room['outside'].n_to == room['foyer']):
@@ -115,6 +122,26 @@ def moveTo(target: Player, letter: str):
         else:
             target.currentRoom = target.currentRoom.e_to
 
+def error():
+    textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
+
+def getItem(str):
+    for item in mPlayer.currentRoom.items:
+        if str in listOfItems and item == listOfItems[str]:
+            #ADD ITEM TO PLAYERS LIST
+            mPlayer.items.append(item)
+            #remove item from currentRoom
+            mPlayer.currentRoom.items.remove(item)
+            textwrapIMPL(f"{mPlayer.name} got {item.name}\n\n{item.description}")
+            return True
+            #debug:
+            for i in mPlayer.currentRoom.items:
+                print(i)
+            for i in mPlayer.items:
+                print(i)
+            #debug
+    textwrapIMPL(f"sorry {str} is not an item in this room")
+
 
 def resolver(rawStr: str):
     if len(rawStr) == 1:
@@ -124,15 +151,27 @@ def resolver(rawStr: str):
             textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
             global keepPlaying
             keepPlaying = False
-    elif rawStr == "help":
+    elif rawStr == "help" or rawStr == "rtfm":
         print(help)
+    elif len(rawStr.split(" ")) == 2:
+        rawStr=rawStr.split(" ")
+        if rawStr[0] == "get":
+            getItem(rawStr[1])
+
+        else:
+            error()
     else:
-        textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
+        error()
 
 
 while keepPlaying:
     textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
     textwrapIMPL(mPlayer.currentRoom.description)
+    if mPlayer.currentRoom.items:
+        textwrapIMPL("There are some things here:")
+        for item in mPlayer.currentRoom.items:
+            textwrapIMPL(f"~{item.name}~")
+
     next = input("What next? Type help for options\n")
     resolver(
         next.lower())  ## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here

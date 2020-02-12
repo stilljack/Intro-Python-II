@@ -6,7 +6,7 @@ from src.room import Room
 class Player:
     name:str
     currentRoom:Room
-
+    items=[]
     def __init__(self, name: str, currentRoom: Room):
         self.name=name
         self.currentRoom=currentRoom

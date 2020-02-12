@@ -4,7 +4,7 @@
 class Room:
     name = ""
     description = ""
-
+    items = []
     #
     # * The room should also have `n_to`, `s_to`, `e_to`, and `w_to` attributes
     #   which point to the room in that respective direction.
