@@ -6,19 +6,7 @@ from src.help import *
 from src.player import *
 
 
-if (listOfRooms['outside'].n_to == listOfRooms['foyer']):
-    #print("outside n to foyer link successful, proceeding")
-    print(f"test passed for outside n_to:{listOfRooms['outside'].n_to.name} = {listOfRooms['foyer'].name}")
-else:
-    print("somethings gone wrong with room linkage, exiting")
-    exit("all fd up in room linkage")
 
-testItemName = "vaporizer"
-if isItemKey(testItemName):
-    print(f"test passed for {testItemName} = {listOfItems[testItemName].name}")
-else:
-    print(f"test entry = {testItemName} is not in itemList")
-    raise Exception("all fd up in items")
 
 #
 # Main
@@ -86,7 +74,10 @@ def dropItem(str):
 
 def resolver(rawStr: str):
     if len(rawStr) == 1:
-        if rawStr == "n" or rawStr == "s" or rawStr == "e" or rawStr == "w":
+        if rawStr in ("n","s","e","w"):
+            mPlayer.moveTo(rawStr)
+        if rawStr in "nsew":
+            print(f"triggered for {rawStr}")
             mPlayer.moveTo(rawStr)
         if rawStr == "q":
             textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
@@ -96,7 +87,8 @@ def resolver(rawStr: str):
         print(help)
     elif len(rawStr.split(" ")) == 2:
         rawStr=rawStr.split(" ")
-        if rawStr[0] == ("get" or "take"):
+        print (f"rawstr 0 = {rawStr[0]} \n and rawstr 1 = {rawStr[1]}")
+        if rawStr[0] in ("get", "take"):
             getItem(rawStr[1])
         if rawStr[0] == "drop":
             dropItem(rawStr[1])
@@ -105,6 +97,13 @@ def resolver(rawStr: str):
         print("end debug 2")
         error()
 
+def checkFormat(str:str):
+    #if you do have an alphanumeric string, lowcase it and send it on to the resolver
+    if str.isalpha():
+        return str.lower()
+    else:
+        textwrapIMPL("Your Input is whackadoodle, please try entering something reasonable or type help for some help!")
+        return "blank"
 
 while keepPlaying:
 
@@ -116,10 +115,12 @@ while keepPlaying:
         for item in mPlayer.currentRoom.items:
             textwrapIMPL(f"~{item.name}~")
 
-#take in user input, covert it to lower case and then send it on to resolver
-    next = input("What next? Type help for options\n")
+#take in user input, check for sanity and sanitize it, then send it on to resolver
+    next = checkFormat(input("What next? Type help for options\n"))
     resolver(
-        next.lower())  ## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
+        next
+    )## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
+
 
 # valid user input is n s e w
 #

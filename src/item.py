@@ -14,7 +14,7 @@ class Item:
 listOfItems = {
     'gold': Item("Gold", """It's gold, it was in them hills, it is now here.
          With you.
-        Enjoying you company."""),
+        Enjoying your company."""),
     'money': Item("Money", """Fiat currency."""),
     'goop': Item("Goop", """Gwyenth paltrow's own Goop.
         The company, instantiated.
