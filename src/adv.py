@@ -165,6 +165,8 @@ def resolver(rawStr: str):
 
 
 while keepPlaying:
+
+    #begin loop, display stuff about the current room including item loop
     textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
     textwrapIMPL(mPlayer.currentRoom.description)
     if mPlayer.currentRoom.items:
@@ -172,6 +174,7 @@ while keepPlaying:
         for item in mPlayer.currentRoom.items:
             textwrapIMPL(f"~{item.name}~")
 
+#take in user input, covert it to lower case and then send it on to resolver
     next = input("What next? Type help for options\n")
     resolver(
         next.lower())  ## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
