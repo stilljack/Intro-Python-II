@@ -134,13 +134,18 @@ def getItem(str):
             mPlayer.currentRoom.items.remove(item)
             textwrapIMPL(f"{mPlayer.name} got {item.name}\n\n{item.description}")
             return True
-            #debug:
-            for i in mPlayer.currentRoom.items:
-                print(i)
-            for i in mPlayer.items:
-                print(i)
-            #debug
-    textwrapIMPL(f"sorry {str} is not an item in this room")
+    textwrapIMPL(f"sorry {str} is not an item in this room (maybe you want to type drop itemname to discard it from your person?)")
+
+def dropItem(str):
+    for item in mPlayer.items:
+        if str in listOfItems and item == listOfItems[str]:
+            #remove ITEM froms PLAYERS LIST
+            mPlayer.items.remove(item)
+            #add item to currentRoom
+            mPlayer.currentRoom.items.append(item)
+            textwrapIMPL(f"{mPlayer.name} dropped {item.name}")
+            return True
+    textwrapIMPL(f"sorry {str} is not an item you have on your person (maybe you want to type get itemname to pick up off the floor?)")
 
 
 def resolver(rawStr: str):
@@ -155,12 +160,13 @@ def resolver(rawStr: str):
         print(help)
     elif len(rawStr.split(" ")) == 2:
         rawStr=rawStr.split(" ")
-        if rawStr[0] == "get":
+        if rawStr[0] == ("get" or "take"):
             getItem(rawStr[1])
+        if rawStr[0] == "drop":
+            dropItem(rawStr[1])
 
-        else:
-            error()
     else:
+        print("end debug 2")
         error()
 
 
