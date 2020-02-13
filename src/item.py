@@ -11,8 +11,6 @@ class Item:
         self.name = name
 
 
-
-
 listOfItems = {
     'gold': Item("Gold", """It's gold, it was in them hills, it is now here.
          With you.
@@ -31,16 +29,11 @@ listOfItems = {
 itemKeys: KeysView[str] = listOfItems.keys()
 
 
-def isItem(e):
-        for i in listOfItems:
-            if i == e:
+def isItemKey(e):
+        for key in listOfItems:
+            print(f"key = {key} and target e = {e}")
+            if key == e:
                 return True
-            else:
-                return False
+        return False
 
 
-testEntry = "vaporizer"
-if (isItem(testEntry)):
-    print(listOfItems[testEntry].name)
-else:
-    print(f"test entry = {testEntry} is not in itemList")
