@@ -1,35 +1,14 @@
-
-from src.shared_functions import *
+import os
+from src.shared_functions import shared_func
 from src.item import *
 from src.room import *
 from src.help import *
 from src.player import *
 
-
-
-
-#
-# Main
-#
-# Make a new player object that is currently in the 'outside' room.
-
-print("Adventure game or whatever!")
-
-mPlayer = Player(
-    name=input("enter your name:"),
-    currentRoom=listOfRooms['outside']
-)
-
-
-
-
+sf = shared_func()
 
 # set out keep playing variable to true to figure out of we need to play another turn or not
 keepPlaying = True
-
-# welcome player
-print(f"Hello {mPlayer.name}! lets get to getting")
-
 
 # Write a loop that:
 #
@@ -46,81 +25,112 @@ print(f"Hello {mPlayer.name}! lets get to getting")
 # however moveTo is responsible for determining if it should actually move the player, or spit an error
 
 
+def quitGame(target: Player):
+    sf.textwrapIMPL(f"Hate to see you go {target.name}, love to see you leave ;)")
+    global keepPlaying
+    keepPlaying = False
+    if __name__ == '__main__':
+        os._exit(31337)
+
+
 def error():
-    textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
+    sf.textwrapIMPL("Invalid entry, sorry, please type help to RTFM")
 
-def getItem(str):
-    for item in mPlayer.currentRoom.items:
+def getItem(target: Player, str):
+    for item in target.currentRoom.items:
         if str in listOfItems and item == listOfItems[str]:
-            #ADD ITEM TO PLAYERS LIST
-            mPlayer.items.append(item)
-            #remove item from currentRoom
-            mPlayer.currentRoom.items.remove(item)
-            textwrapIMPL(f"{mPlayer.name} got {item.name}\n\n{item.description}")
+            # ADD ITEM TO PLAYERS LIST
+            target.items.append(item)
+            # remove item from currentRoom
+            target.currentRoom.items.remove(item)
+            sf.textwrapIMPL(f"{target.name} got {item.name}\n\n{item.description}")
             return True
-    textwrapIMPL(f"sorry {str} is not an item in this room (maybe you want to type drop itemname to discard it from your person?)")
+    sf.textwrapIMPL(
+        f"sorry {str} is not an item in this room (maybe you want to type drop itemname to discard it from your person?)")
 
-def dropItem(str):
-    for item in mPlayer.items:
+
+def dropItem(target: Player, str):
+    for item in target.items:
         if str in listOfItems and item == listOfItems[str]:
-            #remove ITEM froms PLAYERS LIST
-            mPlayer.items.remove(item)
-            #add item to currentRoom
-            mPlayer.currentRoom.items.append(item)
-            textwrapIMPL(f"{mPlayer.name} dropped {item.name}")
+            # remove ITEM froms PLAYERS LIST
+            target.items.remove(item)
+            # add item to currentRoom
+            target.currentRoom.items.append(item)
+            sf.textwrapIMPL(f"{target.name} dropped {item.name}")
             return True
-    textwrapIMPL(f"sorry {str} is not an item you have on your person (maybe you want to type get itemname to pick up off the floor?)")
+    sf.textwrapIMPL(
+        f"sorry {str} is not an item you have on your person (maybe you want to type get itemname to pick up off the floor?)")
 
 
-def resolver(rawStr: str):
+def resolver(target: Player, rawStr: str):
     if len(rawStr) == 1:
-        if rawStr in ("n","s","e","w"):
-            mPlayer.moveTo(rawStr)
-        if rawStr in "nsew":
-            print(f"triggered for {rawStr}")
-            mPlayer.moveTo(rawStr)
+        if rawStr in ("n", "s", "e", "w"):
+            target.moveTo(rawStr)
         if rawStr == "q":
-            textwrapIMPL(f"Hate to see you go {mPlayer.name}, love to see you leave ;)")
-            global keepPlaying
-            keepPlaying = False
+            quitGame(target)
     elif rawStr == "help" or rawStr == "rtfm":
         print(help)
     elif len(rawStr.split(" ")) == 2:
-        rawStr=rawStr.split(" ")
-        print (f"rawstr 0 = {rawStr[0]} \n and rawstr 1 = {rawStr[1]}")
+        rawStr = rawStr.split(" ")
+        # print (f"rawstr 0 = {rawStr[0]} \n and rawstr 1 = {rawStr[1]}")
         if rawStr[0] in ("get", "take"):
-            getItem(rawStr[1])
+            getItem(target, rawStr[1])
         if rawStr[0] == "drop":
-            dropItem(rawStr[1])
-
+            dropItem(target, rawStr[1])
     else:
-        print("end debug 2")
         error()
 
-def checkFormat(str:str):
-    #if you do have an alphanumeric string, lowcase it and send it on to the resolver
+
+def checkFormat(str: str):
+    # if you do have an alphanumeric string, lowcase it and send it on to the resolver
     if str.isalpha():
         return str.lower()
+    if len(str.split(" ")) >= 2:
+        split = str.split(" ")
+        # if there's non alphanumerics, we should dump the user input
+        for i in split:
+            if not i.isalpha():
+                sf.textwrapIMPL(
+                    "Your Input is whackadoodle, please try entering something reasonable or type help for some help!")
+                return "Blank"
+        return str.lower()
     else:
-        textwrapIMPL("Your Input is whackadoodle, please try entering something reasonable or type help for some help!")
+        sf.textwrapIMPL(
+            "Your Input is whackadoodle, please try entering something reasonable or type help for some help!")
         return "blank"
 
-while keepPlaying:
 
-    #begin loop, display stuff about the current room including item loop
-    textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
-    textwrapIMPL(mPlayer.currentRoom.description)
-    if mPlayer.currentRoom.items:
-        textwrapIMPL("There are some things here:")
-        for item in mPlayer.currentRoom.items:
-            textwrapIMPL(f"~{item.name}~")
+def adventureTime():
+    global keepPlaying
+    print("Adventure game or whatever!")
 
-#take in user input, check for sanity and sanitize it, then send it on to resolver
-    next = checkFormat(input("What next? Type help for options\n"))
-    resolver(
-        next
-    )## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
+    mPlayer = Player(
+        name=input("enter your name:"),
+        currentRoom=listOfRooms['outside']
+    )
+
+    # welcome player
+    print(f"Hello {mPlayer.name}! lets get to getting")
+
+    while keepPlaying:
+
+        # begin loop, display stuff about the current room including item loop
+        sf.textwrapIMPL(f"You are currently in {mPlayer.currentRoom.name}")
+        sf.textwrapIMPL(mPlayer.currentRoom.description)
+        if mPlayer.currentRoom.items:
+            sf.textwrapIMPL("There are some things here:")
+            for item in mPlayer.currentRoom.items:
+                sf.textwrapIMPL(f"~{item.name}~")
+
+        # take in user input, check for sanity and sanitize it, then send it on to resolver
+        next = checkFormat(input("What next? Type help for options\n"))
+        resolver(
+            mPlayer,
+            next
+        )  ## arguably conversion to lowercase should be the responsibility of the resolver function, but f it i like it here
 
 
 # valid user input is n s e w
 #
+if __name__ == '__main__':
+    adventureTime()
