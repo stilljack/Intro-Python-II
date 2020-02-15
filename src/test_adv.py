@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
     def test_resolver(self):
 
         src.adv.resolver(crashTestPlayer,"q")
-        self.assertEqual("Hate to see you go jack, love to see you leave ;)", sf.stringtestingholder)
+        self.assertEqual("Hate to see you go jack, love to see you leave ;)", sf.getLast())
 
 
 if __name__ == '__main__':

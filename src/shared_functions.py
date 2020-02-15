@@ -6,11 +6,17 @@ import textwrap
 tw = textwrap
 class shared_func(object):
 
+
+    lastType = ""
+
     def textwrapIMPL(self,text: str):
         final = tw.wrap(text, 80)
+
         for t in final:
             print(t)
+            self.lastType=t
 
-
+    def getLast(self):
+        return self.lastType
 
 
