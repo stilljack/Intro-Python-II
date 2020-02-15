@@ -20,3 +20,5 @@ class shared_func(object):
         return self.lastType
 
 
+
+sf = shared_func()

@@ -1,9 +1,7 @@
 # Write a class to hold player information, e.g. what room they are in
 # currently.
 from src.room import Room
-from src.shared_functions import shared_func
-
-sf =shared_func
+from src.shared_functions import sf
 
 class Player:
     name: str

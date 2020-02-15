@@ -1,11 +1,11 @@
 import os
-from src.shared_functions import shared_func
+from src.shared_functions import sf
 from src.item import *
 from src.room import *
 from src.help import *
 from src.player import *
 
-sf = shared_func()
+
 
 # set out keep playing variable to true to figure out of we need to play another turn or not
 keepPlaying = True
